@@ -8,35 +8,35 @@ const promotionRouter = express.Router();
 
 promotionRouter.route('/')
 
-.get((req, res, next) => {
-    Promotion.find()
-    .then(promotion => {
-         res.statusCode = 200;
-         res.setHeader('Content-Type', 'application/json');
-         res.json(promotion);
-  })
-    .catch(err => next(err));
-})
-
-.post((req, res, next) => {
-
-    Promotion.create(req.body)
-    .then(promotion => {
-        console.log('Promotion Created ', promotion);
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(promotion);
+    .get((req, res, next) => {
+        Promotion.find()
+            .then(promotion => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(promotion);
+            })
+            .catch(err => next(err));
     })
-    .catch(err => next(err));
-})
-    
 
-.put((req, res) => {
-    res.statusCode = 403;
-    res.end('PUT operation not supported on /partners');
-})
-.delete((req, res, next ) => {
-     Promotion.deleteMany()
+    .post((req, res, next) => {
+
+        Promotion.create(req.body)
+            .then(promotion => {
+                console.log('Promotion Created ', promotion);
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(promotion);
+            })
+            .catch(err => next(err));
+    })
+
+
+    .put((req, res) => {
+        res.statusCode = 403;
+        res.end('PUT operation not supported on /promotions');
+    })
+    .delete((req, res, next) => {
+        Promotion.deleteMany()
             .then(response => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
@@ -50,43 +50,44 @@ promotionRouter.route('/')
 promotionRouter.route('/:promotionId')
 
 
-.get((req, res, next ) => {
-    Promotion.findById(req.params.promotionId)
-    .then(promotion => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(promotion);
+    .get((req, res, next) => {
+        Promotion.findById(req.params.promotionId)
+            .then(promotion => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(promotion);
+            })
+            .catch(err => next(err));
     })
-    .catch(err => next(err));
-})
 
-.post((req, res) => {
-    res.statusCode = 403;
+    .post((req, res) => {
+        res.statusCode = 403;
+        res.end(`POST operation not supported on /promotions/${req.params.promotionId}`);
 
-})
-
-.put((req, res, next) => {
-    Promotion.findByIdAndUpdate(req.params.promotionId, {
-        $set: req.body
-    }, { new: true })
-        .then(promotion=> {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json(promotion);
-        })
-        .catch(err => next(err));
-
-})
-.delete((req, res, next ) => {
-
-    Promotion.findByIdAndDelete(req.params.promotionId)
-    .then(response => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(response);
     })
-    .catch(err => next(err));
-});
+
+    .put((req, res, next) => {
+        Promotion.findByIdAndUpdate(req.params.promotionId, {
+            $set: req.body
+        }, { new: true })
+            .then(promotion => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(promotion);
+            })
+            .catch(err => next(err));
+
+    })
+    .delete((req, res, next) => {
+
+        Promotion.findByIdAndDelete(req.params.promotionId)
+            .then(response => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(response);
+            })
+            .catch(err => next(err));
+    });
 
 
 promotionRouter.route('/:promotionId/comments')
@@ -107,7 +108,7 @@ promotionRouter.route('/:promotionId/comments')
                 }
             })
 
-        .catch(err => next(err));
+            .catch(err => next(err));
     })
 
     .post((req, res, next) => {
@@ -117,7 +118,7 @@ promotionRouter.route('/:promotionId/comments')
                 if (promotion) {
                     promotion.comments.push(req.body);
                     promotion.save()
-                        .then(promotion=> {
+                        .then(promotion => {
                             res.statusCode = 200;
                             res.setHeader('Content-Type', 'application/json');
                             res.json(promotion);
@@ -135,7 +136,7 @@ promotionRouter.route('/:promotionId/comments')
             .catch(err => next(err));
     })
 
-     .put((req, res) => {
+    .put((req, res) => {
         res.statusCode = 403;
         res.end(`PUT operation not supported on /promotions/${req.params.promotionId}/comments`);
     })
@@ -164,9 +165,11 @@ promotionRouter.route('/:promotionId/comments')
                 }
             })
             .catch(err => next(err));
+
+            
     });
 
-     promotionRouter.route('/:promotionId/comments/:commentId')
+    promotionRouter.route('/:campsiteId/comments/:commentId')
 
     .get((req, res, next) => {
         Promotion.findById(req.params.promotionId)
@@ -191,11 +194,11 @@ promotionRouter.route('/:promotionId/comments')
     .post((req, res) => {
         res.statusCode = 403;
         res.end(`POST operation not supported on /promotion/${req.params.promotionId}/comments/${req.params.commentId}`);
-   
+
     })
     .put((req, res, next) => {
         Promotion.findById(req.params.promotionId)
-            .then(partner=> {
+            .then(partner => {
                 if (promotion && promotion.comments.id(req.params.commentId)) {
                     if (req.body.rating) {
                         promotion.comments.id(req.params.commentId).rating = req.body.rating;
@@ -204,7 +207,7 @@ promotionRouter.route('/:promotionId/comments')
                         promotion.comments.id(req.params.commentId).text = req.body.text;
                     }
                     promotion.save()
-                        .then(promotion=> {
+                        .then(promotion => {
                             res.statusCode = 200;
                             res.setHeader('Content-Type', 'application/json');
                             res.json(promotion);
@@ -229,7 +232,7 @@ promotionRouter.route('/:promotionId/comments')
     .delete((req, res, next) => {
         Promotion.findById(req.params.promotionId)
             .then(promotion => {
-                if (promotion&& promotion.comments.id(req.params.commentId)) {
+                if (promotion && promotion.comments.id(req.params.commentId)) {
                     promotion.comments.id(req.params.commentId).remove();
                     promotion.save()
                         .then(promotion => {

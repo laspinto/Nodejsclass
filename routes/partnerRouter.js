@@ -60,6 +60,7 @@ partnerRouter.route('/:partnerId')
 
 .post((req, res) => {
     res.statusCode = 403;
+    res.end(`POST operation not supported on /partners/${req.params.partnerId}`);
 
 })
 
@@ -99,7 +100,7 @@ partnerRouter.route('/:partnerId/comments')
                     res.json(partner.comments);
 
                 } else {
-                    err = new Error(`Campsite ${req.params.partnerId} not found`);
+                    err = new Error(`Partner ${req.params.partnerId} not found`);
                     err.status = 404;
                     return next(err);
                 }
@@ -135,7 +136,7 @@ partnerRouter.route('/:partnerId/comments')
 
      .put((req, res) => {
         res.statusCode = 403;
-        res.end(`PUT operation not supported on /partners/${req.params.partnerId}/comments`);
+        res.end(`PUT operation not supported on /partners/${req.params.partnerId}`);
     })
     .delete((req, res, next) => {
 
