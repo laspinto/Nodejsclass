@@ -1,6 +1,7 @@
 const express = require('express');
 const User = require('../models/user');
 const passport = require('passport');
+const cors = require('./cors');
 
 const authenticate = require('../authenticate');
 
@@ -16,9 +17,6 @@ function (req, res)   {
     })
 
     .catch(err => res.status(400).send({ err }));
-
-
-
 
 router.post('/signup', (req, res) => {
     User.register(
@@ -71,6 +69,7 @@ router.get('/logout', (req, res, next) => {
         err.status = 401;
         return next(err);
     }
+
 });
 
 module.exports = router;
