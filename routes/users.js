@@ -9,16 +9,19 @@ const authenticate = require('../authenticate');
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/', authenticate.verifyUser, authenticate.verifyAdmin, 
+router.get('/', cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, 
 function (req, res)   { 
      User.find()
-    .then(data =>{
-        res.send(data);
+    .then(user => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(user);
+
     })
 
-    .catch(err => res.status(400).send({ err }));
+    .catch(err => next( err ));
 
-router.post('/signup', (req, res) => {
+router.post('/signup', cors.corsWithOptions, (req, res) => {
     User.register(
         new User({ username: req.body.username }),
         req.body.password,
@@ -52,14 +55,14 @@ router.post('/signup', (req, res) => {
     );
 });
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
+router.post('/login',cors.corsWithOptions, passport.authenticate('local'), (req, res) => {
     const token = authenticate.getToken({ _id: req.user._id });
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
     res.json({ success: true, token: token, status: 'You are successfully logged in!' });
 });
 
-router.get('/logout', (req, res, next) => {
+router.get('/logout', cors.corsWithOptions,(req, res, next) => {
     if (req.session) {
         req.session.destroy();
         res.clearCookie('session-id');
@@ -79,7 +82,9 @@ router.get('/facebook/token', passport.authenticate('facebook-token'), (req, res
         res.setHeader('Content-Type', 'application/json');
         res.json({success: true, token: token, status: 'You are successfully logged in!'});
     }
+})
+
 });
-. . 
+
 
 module.exports = router;

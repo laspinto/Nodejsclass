@@ -8,11 +8,7 @@ const router = express.Router();
 const cors = require('./cors');
 
 
-
-
-
-
-   router .get("/", (req, res) => { 
+router .get("/", (req, res) => { 
         Promotion.find()
             .then(promotions => {
                 res.send(promotions);
@@ -48,11 +44,7 @@ const cors = require('./cors');
     });
 
 
-
-
-
-
-   router.get("/:promotionId", (req, res) => {
+  router.get("/:promotionId", (req, res) => {
         Promotion.findById(req.params.promotionId, (err, promotion) => {
             if (err)  {
                 res.status(400).send(err);
@@ -96,18 +88,16 @@ const cors = require('./cors');
             })
 
             .catch(err => res.status(400).send(err));
-  }
+  
                 
 })
 
 
-promotionRouter.route('/:promotionId/comments')
+//promotionRouter.route('/:promotionId/comments')
 .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
     .get(cors.cors, (req, res, next) => {
 
-    
-
-        Promotion.findById(req.params.promotionId)
+     Promotion.findById(req.params.promotionId)
             .then(promotion => {
                 if (promotion) {
                     res.statusCode = 200;
@@ -153,7 +143,7 @@ promotionRouter.route('/:promotionId/comments')
         res.statusCode = 403;
         res.end(`PUT operation not supported on /promotions/${req.params.promotionId}/comments`);
     })
-    .deletecors.corsWithOptions, (authenticate.verifyUser,(req, res, next) => {
+    .delete ( ecors.corsWithOptions, authenticate.verifyUser,(req, res, next) => {
 
         Promotion.findById(req.params.promotionId)
             .then(promotion => {
@@ -182,7 +172,8 @@ promotionRouter.route('/:promotionId/comments')
             
     });
 
-    promotionRouter.route('/:campsiteId/comments/:commentId')
+   // promotionRouter.route('/:promotionId/comments/:commentID')
+
     .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
     .get(cors.cors, (req, res, next) => {
 
@@ -273,7 +264,4 @@ promotionRouter.route('/:promotionId/comments')
     });
 
 
-
-
-
-module.export =router;
+module.export = router;

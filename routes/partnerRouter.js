@@ -6,9 +6,6 @@ const authenticate = require('../authenticate');
 const cors = require('./cors');
 
 
-
-
-
 router.get("/", (req, res) => {
     Partner.find()
         .then(partners => {
@@ -93,6 +90,7 @@ router.delete("/: partner", authenticate.verifyUser, authenticate.verifyAdmin, (
 
 
 partnerRouter.route('/:partnerId/comments')
+
 .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
     .get(cors.cors, (req, res, next) => {
 
@@ -113,7 +111,10 @@ partnerRouter.route('/:partnerId/comments')
             })
 
             .catch(err => next(err));
+        
         })
+
+    
 
     .post(cors.corsWithOptions,authenticate.verifyUser, (req, res, next) => {
 
@@ -169,12 +170,14 @@ partnerRouter.route('/:partnerId/comments')
                 }
             })
             .catch(err => next(err));
-        })
+        
     });
 
-partnerRouter.route('/:partnerId/comments/:commentId')
+    module.exports = router;
 
-    .get((req, res, next) => {
+//partnerRouter.route('/:partnerId/comments/:commentId')
+
+    .get ((req, res, next) => {
         Partner.findById(req.params.partnerId)
             .then(partner => {
                 if (partner && partner.comments.id(req.params.commentId)) {
